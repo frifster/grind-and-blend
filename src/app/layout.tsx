@@ -1,4 +1,4 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Footer from "@components/Layout/Footer";
 
 import "./globals.css";
@@ -24,20 +24,20 @@ interface RootLayoutProps {
 export default function RootLayout(props: RootLayoutProps) {
 
   return (
-    <ClerkProvider>
-      <html lang="en">
+    <html lang="en">
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <body className={inter.className}>
-      <Analytics />
-      <NavBar />
-      <MainContainer>
-        {props.children}
-      </MainContainer>
-      <Footer />
+        <AuthProvider>
+          <Analytics />
+          <NavBar />
+          <MainContainer>
+            {props.children}
+          </MainContainer>
+          <Footer />
+        </AuthProvider>
       </body>
-      </html>
-    </ClerkProvider>
+    </html>
   );
 }

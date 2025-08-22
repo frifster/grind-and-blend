@@ -96,6 +96,16 @@
             @extend %active-underline-styles;
         }
     }
+
+    // Remove underline animation for menu items containing buttons (like AuthButton)
+    &:has(button) {
+        &:after {
+            display: none !important;
+        }
+        &:hover:after {
+            display: none !important;
+        }
+    }
 }
 
 
@@ -170,6 +180,15 @@
             margin: 0 auto;
             background-color: var(--accent-color);
             border-radius: 99px;
+        }
+    }
+
+    // Remove underline animation for menu items containing buttons (like AuthButton)
+    &:has(button) {
+        &:hover a:after,
+        &:focus a:after,
+        &:active a:after {
+            display: none !important;
         }
     }
 }
