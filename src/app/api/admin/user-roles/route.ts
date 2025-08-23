@@ -6,6 +6,15 @@ type UserRole = Database['public']['Tables']['user_roles']['Row']
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Role = Database['public']['Tables']['roles']['Row']
 
+// Validate required environment variables
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+}
+
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+}
+
 // Create service role client to bypass RLS
 const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

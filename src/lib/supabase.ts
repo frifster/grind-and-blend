@@ -1,5 +1,14 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
+// Validate required environment variables
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+}
+
+if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -141,7 +150,10 @@ export interface Database {
 }
 
 // Create Supabase client for client-side components
-export const supabase = createClientComponentClient<Database>()
+export const supabase = createClientComponentClient<Database>({
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+})
 
 // Types for RBAC
 export type Role = Database['public']['Tables']['roles']['Row']
