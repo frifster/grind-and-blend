@@ -6,11 +6,8 @@ import MainContainer from "@components/Layout/MainContainer";
 
 import NavBar from "@components/Layout/NavBar";
 import { Analytics } from "@vercel/analytics/react";
-import { Inter } from "next/font/google";
 import Head from "next/head";
 import { ReactNode } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Grind & Blend",
@@ -28,7 +25,7 @@ export default function RootLayout(props: RootLayoutProps) {
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
-      <body className={inter.className}>
+      <body className="font-sans">
         <AuthProvider>
           <Analytics />
           <NavBar />
