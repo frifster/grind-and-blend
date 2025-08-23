@@ -136,6 +136,111 @@ export interface Database {
           expires_at?: string | null
         }
       }
+      ingredients: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          cost_per_unit: number
+          unit: string
+          category: string | null
+          supplier: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          cost_per_unit: number
+          unit: string
+          category?: string | null
+          supplier?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          cost_per_unit?: number
+          unit?: string
+          category?: string | null
+          supplier?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      products: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          category: string
+          selling_price: number | null
+          estimated_cost: number | null
+          profit_margin: number | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          category: string
+          selling_price?: number | null
+          estimated_cost?: number | null
+          profit_margin?: number | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          category?: string
+          selling_price?: number | null
+          estimated_cost?: number | null
+          profit_margin?: number | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_ingredients: {
+        Row: {
+          id: string
+          product_id: string
+          ingredient_id: string
+          quantity: number
+          unit: string
+          cost_contribution: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          ingredient_id: string
+          quantity: number
+          unit: string
+          cost_contribution?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          ingredient_id?: string
+          quantity?: number
+          unit?: string
+          cost_contribution?: number | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -162,6 +267,11 @@ export type UserRole = Database['public']['Tables']['user_roles']['Row']
 export type RolePermission = Database['public']['Tables']['role_permissions']['Row']
 export type Profile = Database['public']['Tables']['profiles']['Row']
 
+// Types for Product Costing
+export type Ingredient = Database['public']['Tables']['ingredients']['Row']
+export type Product = Database['public']['Tables']['products']['Row']
+export type ProductIngredient = Database['public']['Tables']['product_ingredients']['Row']
+
 // Extended types with relationships
 export interface UserWithRoles extends Profile {
   user_roles: (UserRole & {
@@ -176,5 +286,11 @@ export interface UserWithRoles extends Profile {
 export interface RoleWithPermissions extends Role {
   role_permissions: (RolePermission & {
     permissions: Permission
+  })[]
+}
+
+export interface ProductWithIngredients extends Product {
+  product_ingredients: (ProductIngredient & {
+    ingredients: Ingredient
   })[]
 }

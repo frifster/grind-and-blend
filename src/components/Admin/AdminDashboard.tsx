@@ -6,13 +6,14 @@ import React, { useState, useEffect } from 'react'
 // import { PERMISSIONS } from '@/lib/permissions'
 import RoleManager from './RoleManager'
 import UserRoleManager from './UserRoleManager'
+import ProductCostingManager from './ProductCostingManager'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface AdminDashboardProps {
   className?: string
 }
 
-type TabType = 'roles' | 'users' | 'permissions'
+type TabType = 'roles' | 'users' | 'permissions' | 'products'
 
 export default function AdminDashboard({ className = '' }: AdminDashboardProps) {
   // TEMPORARILY DISABLED: Permission checking - only verify authentication
@@ -48,6 +49,16 @@ export default function AdminDashboard({ className = '' }: AdminDashboardProps) 
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 'products' as TabType,
+      name: 'Product Costing',
+      // permission: PERMISSIONS.PRODUCTS_READ, // TEMPORARILY DISABLED
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       )
     }
@@ -135,6 +146,17 @@ export default function AdminDashboard({ className = '' }: AdminDashboardProps) 
         // ) : (
         //   <div className="p-6 text-center text-gray-500">
         //     You don&apos;t have permission to manage permissions.
+        //   </div>
+        // )
+
+      case 'products':
+        // TEMPORARILY DISABLED: Permission checks - allow access for authenticated users
+        return <ProductCostingManager />
+        // return hasPermission(PERMISSIONS.PRODUCTS_READ) ? (
+        //   <ProductCostingManager />
+        // ) : (
+        //   <div className="p-6 text-center text-gray-500">
+        //     You don&apos;t have permission to manage products.
         //   </div>
         // )
       
