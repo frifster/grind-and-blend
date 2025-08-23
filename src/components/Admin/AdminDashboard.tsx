@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 // import { PERMISSIONS } from '@/lib/permissions'
 import RoleManager from './RoleManager'
 import UserRoleManager from './UserRoleManager'
-import ProductCostingManager from './ProductCostingManager'
+import ProductCostingManagerMock from './ProductCostingManagerMock'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface AdminDashboardProps {
@@ -19,7 +19,7 @@ export default function AdminDashboard({ className = '' }: AdminDashboardProps) 
   // TEMPORARILY DISABLED: Permission checking - only verify authentication
   // const { hasPermission, loading } = usePermissions()
   const { user, loading } = useAuth()
-  const [activeTab, setActiveTab] = useState<TabType>('roles')
+  const [activeTab, setActiveTab] = useState<TabType>('products')
 
   const tabs = [
     {
@@ -87,7 +87,9 @@ export default function AdminDashboard({ className = '' }: AdminDashboardProps) 
   }
 
   // TEMPORARILY DISABLED: Permission checks - only verify authentication
-  if (!user) {
+  // Allow access in development mode even without user
+  const isDev = process.env.NODE_ENV === 'development'
+  if (!user && !isDev) {
     return (
       <div className={`p-6 ${className}`}>
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -151,9 +153,9 @@ export default function AdminDashboard({ className = '' }: AdminDashboardProps) 
 
       case 'products':
         // TEMPORARILY DISABLED: Permission checks - allow access for authenticated users
-        return <ProductCostingManager />
+        return <ProductCostingManagerMock />
         // return hasPermission(PERMISSIONS.PRODUCTS_READ) ? (
-        //   <ProductCostingManager />
+        //   <ProductCostingManagerMock />
         // ) : (
         //   <div className="p-6 text-center text-gray-500">
         //     You don&apos;t have permission to manage products.

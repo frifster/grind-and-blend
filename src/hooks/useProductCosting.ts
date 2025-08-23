@@ -126,7 +126,9 @@ export function useIngredients(): UseIngredientsReturn {
   }
 
   useEffect(() => {
-    if (user) {
+    // Allow development testing without authentication
+    const isDev = process.env.NODE_ENV === 'development'
+    if (user || isDev) {
       fetchIngredients()
     } else {
       setIngredients([])
@@ -356,7 +358,9 @@ export function useProducts(): UseProductsReturn {
   }
 
   useEffect(() => {
-    if (user) {
+    // Allow development testing without authentication
+    const isDev = process.env.NODE_ENV === 'development'
+    if (user || isDev) {
       fetchProducts()
     } else {
       setProducts([])
