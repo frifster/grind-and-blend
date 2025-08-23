@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { supabase, Permission, UserWithRoles } from '@/lib/supabase'
+import { Permission } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 
 export interface UsePermissionsReturn {
@@ -26,59 +26,21 @@ export function usePermissions(): UsePermissionsReturn {
       setLoading(true)
       setError(null)
 
-      // Fetch all permissions
-      const { data: permissionsData, error: permissionsError } = await supabase
-        .from('permissions')
-        .select('*')
-        .order('resource, action')
-
-      if (permissionsError) throw permissionsError
-      setPermissions(permissionsData || [])
-
-      // Fetch user's permissions if authenticated
-      if (user) {
-        const { data: userWithRoles, error: userError } = await (supabase as any)
-          .from('profiles')
-          .select(`
-            *,
-            user_roles!inner (
-              *,
-              roles!inner (
-                *,
-                role_permissions (
-                  *,
-                  permissions (*)
-                )
-              )
-            )
-          `)
-          .eq('id', user.id)
-          .or('user_roles.expires_at.is.null,user_roles.expires_at.gt.now()')
-          .single()
-
-        if (userError && userError.code !== 'PGRST116') {
-          throw userError
-        }
-
-        // Extract unique permission names
-        const permissionNames = new Set<string>()
-        
-        if (userWithRoles?.user_roles) {
-          userWithRoles.user_roles.forEach((userRole: any) => {
-            if (userRole.roles?.role_permissions) {
-              userRole.roles.role_permissions.forEach((rolePermission: any) => {
-                if (rolePermission.permissions?.name) {
-                  permissionNames.add(rolePermission.permissions.name)
-                }
-              })
-            }
-          })
-        }
-
-        setUserPermissions(Array.from(permissionNames))
-      } else {
-        setUserPermissions([])
+      // Fetch permissions via API endpoint
+      const response = await fetch('/api/user/permissions')
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch permissions: ${response.statusText}`)
       }
+
+      const data = await response.json()
+      
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setPermissions(data.permissions || [])
+      setUserPermissions(data.userPermissions || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch permissions')
     } finally {
@@ -110,6 +72,8 @@ export function usePermissions(): UsePermissionsReturn {
   useEffect(() => {
     fetchPermissions()
   }, [user])
+
+  console.log({permissions, userPermissions})
 
   return {
     permissions,

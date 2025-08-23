@@ -13,6 +13,7 @@ export default function UserMenu({ className = '' }: UserMenuProps) {
   const { user, signOut } = useAuth()
   const router = useRouter()
   const menuRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -32,6 +33,45 @@ export default function UserMenu({ className = '' }: UserMenuProps) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [isOpen])
+
+  // Position dropdown to prevent out-of-bounds
+  useEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const dropdown = dropdownRef.current
+      const rect = dropdown.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      
+      // Reset positioning
+      dropdown.style.right = '0'
+      dropdown.style.left = 'auto'
+      dropdown.style.transform = 'translateX(0)'
+      dropdown.style.top = ''
+      dropdown.style.bottom = ''
+      
+      // Get updated rect after reset
+      const updatedRect = dropdown.getBoundingClientRect()
+      
+      // Check horizontal bounds
+      if (updatedRect.right > viewportWidth - 10) {
+        // Overflowing right edge
+        const overflow = updatedRect.right - viewportWidth + 10
+        dropdown.style.transform = `translateX(-${overflow}px)`
+      } else if (updatedRect.left < 10) {
+        // Overflowing left edge
+        const overflow = 10 - updatedRect.left
+        dropdown.style.transform = `translateX(${overflow}px)`
+      }
+      
+      // Check vertical bounds
+      if (updatedRect.bottom > viewportHeight - 10) {
+        dropdown.style.top = 'auto'
+        dropdown.style.bottom = '100%'
+        dropdown.style.marginTop = '0'
+        dropdown.style.marginBottom = '0.5rem'
+      }
     }
   }, [isOpen])
 
@@ -85,7 +125,10 @@ export default function UserMenu({ className = '' }: UserMenuProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+        <div 
+          ref={dropdownRef}
+          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
+        >
           <div className="px-4 py-2 border-b border-gray-200">
             <p className="text-sm font-medium text-gray-900">
               {user.user_metadata?.full_name || 'User'}

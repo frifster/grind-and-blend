@@ -77,16 +77,27 @@ export function useRoles(): UseRolesReturn {
     try {
       setError(null)
       
-      const { error } = await (supabase as any)
-        .from('user_roles')
-        .insert({
-          user_id: userId,
-          role_id: roleId,
-          assigned_by: user?.id || null,
-          expires_at: expiresAt || null
+      const response = await fetch('/api/admin/user-roles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          roleId,
+          expiresAt
         })
-
-      if (error) throw error
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      
+      if (result.error) {
+        throw new Error(result.error)
+      }
 
       await fetchRoles() // Refresh data
       return true
@@ -100,13 +111,19 @@ export function useRoles(): UseRolesReturn {
     try {
       setError(null)
       
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId)
-        .eq('role_id', roleId)
-
-      if (error) throw error
+      const response = await fetch(`/api/admin/user-roles/${userId}?roleId=${roleId}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      
+      if (result.error) {
+        throw new Error(result.error)
+      }
 
       await fetchRoles() // Refresh data
       return true

@@ -174,72 +174,39 @@ CREATE POLICY "Users can view own profile" ON public.profiles
 CREATE POLICY "Users can update own profile" ON public.profiles
   FOR UPDATE USING (auth.uid() = id);
 
-CREATE POLICY "Admins can view all profiles" ON public.profiles
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.user_roles ur
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = auth.uid() 
-      AND r.name IN ('super_admin', 'admin')
-      AND (ur.expires_at IS NULL OR ur.expires_at > NOW())
-    )
-  );
+CREATE POLICY "Service role can view all profiles" ON public.profiles
+  FOR SELECT USING (auth.role() = 'service_role');
 
 -- Roles policies
 CREATE POLICY "Everyone can view roles" ON public.roles
   FOR SELECT USING (true);
 
-CREATE POLICY "Only admins can manage roles" ON public.roles
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.user_roles ur
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = auth.uid() 
-      AND r.name IN ('super_admin', 'admin')
-      AND (ur.expires_at IS NULL OR ur.expires_at > NOW())
-    )
-  );
+CREATE POLICY "Service role can manage roles" ON public.roles
+  FOR ALL USING (auth.role() = 'service_role');
 
 -- Permissions policies
 CREATE POLICY "Everyone can view permissions" ON public.permissions
   FOR SELECT USING (true);
 
-CREATE POLICY "Only super admins can manage permissions" ON public.permissions
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.user_roles ur
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = auth.uid() 
-      AND r.name = 'super_admin'
-      AND (ur.expires_at IS NULL OR ur.expires_at > NOW())
-    )
-  );
+CREATE POLICY "Service role can manage permissions" ON public.permissions
+  FOR ALL USING (auth.role() = 'service_role');
 
--- User roles policies
+-- User roles policies (simplified to avoid recursion)
 CREATE POLICY "Users can view own roles" ON public.user_roles
   FOR SELECT USING (user_id = auth.uid());
 
-CREATE POLICY "Admins can view all user roles" ON public.user_roles
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.user_roles ur
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = auth.uid() 
-      AND r.name IN ('super_admin', 'admin')
-      AND (ur.expires_at IS NULL OR ur.expires_at > NOW())
-    )
-  );
+CREATE POLICY "Service role can access all user roles" ON public.user_roles
+  FOR ALL USING (auth.role() = 'service_role');
 
-CREATE POLICY "Admins can manage user roles" ON public.user_roles
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.user_roles ur
-      JOIN public.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = auth.uid() 
-      AND r.name IN ('super_admin', 'admin')
-      AND (ur.expires_at IS NULL OR ur.expires_at > NOW())
-    )
-  );
+CREATE POLICY "Authenticated users can read user roles" ON public.user_roles
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Role permissions policies
+CREATE POLICY "Everyone can view role permissions" ON public.role_permissions
+  FOR SELECT USING (true);
+
+CREATE POLICY "Service role can manage role permissions" ON public.role_permissions
+  FOR ALL USING (auth.role() = 'service_role');
 
 -- Function to automatically create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()

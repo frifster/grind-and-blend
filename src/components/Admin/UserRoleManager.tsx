@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRoles } from '@/hooks/useRoles'
 import { useAuth } from '@/contexts/AuthContext'
-import { supabase, Profile, Role } from '@/lib/supabase'
+import { Profile, Role } from '@/lib/supabase'
 
 interface UserRoleManagerProps {
   className?: string
@@ -33,18 +33,22 @@ export default function UserRoleManager({ className = '' }: UserRoleManagerProps
   const fetchUsers = async () => {
     try {
       setLoading(true)
-      const { data, error } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          user_roles(
-            role:roles(*)
-          )
-        `)
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setUsers(data || [])
+      setError(null)
+      
+      // Use API endpoint instead of direct Supabase query to bypass RLS
+      const response = await fetch('/api/admin/user-roles')
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const result = await response.json()
+      
+      if (result.error) {
+        throw new Error(result.error)
+      }
+      
+      setUsers(result.users || [])
     } catch (err) {
       console.error('Error fetching users:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch users')

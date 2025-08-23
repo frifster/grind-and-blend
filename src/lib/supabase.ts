@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export interface Database {
   public: {
@@ -140,11 +140,8 @@ export interface Database {
   }
 }
 
-// Create Supabase client
-export const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// Create Supabase client for client-side components
+export const supabase = createClientComponentClient<Database>()
 
 // Types for RBAC
 export type Role = Database['public']['Tables']['roles']['Row']
