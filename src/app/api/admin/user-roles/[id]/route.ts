@@ -50,6 +50,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(params.id)) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+    
     const supabase = supabaseAdmin
     
     // TEMPORARILY DISABLED: Authentication check
@@ -69,8 +75,7 @@ export async function DELETE(
       .from('user_roles')
       .select(`
         *,
-        role:roles(name),
-        user:profiles(email)
+        role:roles(name)
       `)
       .eq('id', params.id)
       .single()
@@ -83,11 +88,11 @@ export async function DELETE(
     }
 
     // Prevent removal of super_admin role from the last super admin
-    const typedAssignment = assignment as UserRole & { role: Role, user: Profile }
+    const typedAssignment = assignment as UserRole & { role: Role }
     if (typedAssignment.role?.name === 'super_admin') {
-      const { data: superAdminCount, error: countError } = await supabase
+      const { count: superAdminCount, error: countError } = await supabase
         .from('user_roles')
-        .select('id', { count: 'exact' })
+        .select('*', { count: 'exact', head: true })
         .eq('role_id', typedAssignment.role_id)
 
       if (countError) {
@@ -95,7 +100,7 @@ export async function DELETE(
         return NextResponse.json({ error: 'Failed to verify super admin count' }, { status: 500 })
       }
 
-      if ((superAdminCount as any)?.length <= 1) {
+      if ((superAdminCount || 0) <= 1) {
         return NextResponse.json({ 
           error: 'Cannot remove the last super admin role' 
         }, { status: 400 })
@@ -103,7 +108,7 @@ export async function DELETE(
     }
 
     // Remove role assignment
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('user_roles')
       .delete()
       .eq('id', params.id)
@@ -126,6 +131,12 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(params.id)) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+    
     const supabase = supabaseAdmin
     
     // TEMPORARILY DISABLED: Authentication check

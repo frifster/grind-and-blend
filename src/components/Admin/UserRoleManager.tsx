@@ -11,6 +11,12 @@ interface UserRoleManagerProps {
 
 interface UserWithRoles extends Profile {
   user_roles: Array<{
+    id: string
+    user_id: string
+    role_id: string
+    assigned_by: string | null
+    assigned_at: string
+    expires_at: string | null
     role: Role
   }>
 }
@@ -77,18 +83,30 @@ export default function UserRoleManager({ className = '' }: UserRoleManagerProps
     }
   }
 
-  const handleRemoveRole = async (userId: string, roleId: string) => {
+  const handleRemoveRole = async (userRoleId: string) => {
     if (!confirm('Are you sure you want to remove this role from the user?')) {
       return
     }
 
     try {
-      const success = await removeRole(userId, roleId)
-      if (success) {
-        await fetchUsers() // Refresh the user list
+      const response = await fetch(`/api/admin/user-roles/${userRoleId}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
+      
+      const result = await response.json()
+      
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
+      await fetchUsers() // Refresh the user list
     } catch (error) {
       console.error('Failed to remove role:', error)
+      setError(error instanceof Error ? error.message : 'Failed to remove role')
     }
   }
 
@@ -186,15 +204,15 @@ export default function UserRoleManager({ className = '' }: UserRoleManagerProps
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1">
-                      {userRolesList.length > 0 ? (
-                        userRolesList.map((role) => (
+                      {userProfile.user_roles?.length > 0 ? (
+                        userProfile.user_roles.map((userRole) => (
                           <span
-                            key={role.id}
+                            key={userRole.id}
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                           >
-                            {role.name}
+                            {userRole.role.name}
                             <button
-                              onClick={() => handleRemoveRole(userProfile.id, role.id)}
+                              onClick={() => handleRemoveRole(userRole.id)}
                               className="ml-1 text-blue-600 hover:text-blue-800"
                               title="Remove role"
                             >
