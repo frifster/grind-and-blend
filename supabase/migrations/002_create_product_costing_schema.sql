@@ -46,83 +46,31 @@ CREATE INDEX idx_products_active ON public.products(is_active);
 CREATE INDEX idx_product_ingredients_product_id ON public.product_ingredients(product_id);
 CREATE INDEX idx_product_ingredients_ingredient_id ON public.product_ingredients(ingredient_id);
 
--- Insert sample ingredients data
+-- Insert ingredients data from Excel file
 INSERT INTO public.ingredients (name, description, cost_per_unit, unit, category, supplier) VALUES
-  -- Dairy
-  ('Whole Milk', 'Fresh whole milk', 0.02, 'ml', 'dairy', 'Local Dairy Co'),
-  ('Cheddar Cheese', 'Aged cheddar cheese', 0.15, 'g', 'dairy', 'Cheese Factory'),
-  ('Butter', 'Unsalted butter', 0.12, 'g', 'dairy', 'Local Dairy Co'),
-  ('Heavy Cream', 'Heavy whipping cream', 0.03, 'ml', 'dairy', 'Local Dairy Co'),
-  
-  -- Proteins  
-  ('Ham', 'Sliced deli ham', 0.45, 'g', 'protein', 'Meat Suppliers Inc'),
-  ('Bacon', 'Crispy bacon strips', 0.55, 'g', 'protein', 'Meat Suppliers Inc'),
-  ('Chicken Breast', 'Grilled chicken breast', 0.32, 'g', 'protein', 'Poultry Farm'),
-  ('Eggs', 'Large fresh eggs', 0.25, 'piece', 'protein', 'Local Farm'),
-  
-  -- Coffee & Beverages
-  ('Coffee Beans', 'Arabica coffee beans', 0.08, 'g', 'beverage', 'Coffee Roasters'),
-  ('Espresso', 'Double shot espresso', 1.50, 'shot', 'beverage', 'Coffee Roasters'),
-  ('Dark Chocolate', 'Premium dark chocolate', 0.18, 'g', 'beverage', 'Chocolate Co'),
-  ('White Chocolate', 'Premium white chocolate', 0.20, 'g', 'beverage', 'Chocolate Co'),
-  
-  -- Bread & Grains
-  ('Bread Slice', 'Artisan bread slice', 0.35, 'piece', 'grain', 'Local Bakery'),
-  ('Bagel', 'Fresh baked bagel', 0.85, 'piece', 'grain', 'Local Bakery'),
-  ('English Muffin', 'Toasted english muffin', 0.65, 'piece', 'grain', 'Local Bakery'),
-  
-  -- Vegetables
-  ('Tomato', 'Fresh tomato slices', 0.08, 'g', 'vegetable', 'Produce Co'),
-  ('Lettuce', 'Fresh lettuce leaves', 0.05, 'g', 'vegetable', 'Produce Co'),
-  ('Onion', 'Yellow onion', 0.03, 'g', 'vegetable', 'Produce Co'),
-  
-  -- Condiments & Seasonings
-  ('Mayonnaise', 'Creamy mayonnaise', 0.04, 'g', 'condiment', 'Sauce Co'),
-  ('Mustard', 'Dijon mustard', 0.06, 'g', 'condiment', 'Sauce Co'),
-  ('Salt', 'Table salt', 0.002, 'g', 'seasoning', 'Spice Co'),
-  ('Black Pepper', 'Ground black pepper', 0.12, 'g', 'seasoning', 'Spice Co');
+  ('Espresso', 'Chanie''s Espresso', 0.769, 'g', 'beverage', 'Chanie''s'),\n  ('Cold brew', 'Easy Cold brew', 0.176, 'g', 'beverage', 'Coffee de Grail'),\n  ('Yogurt powder', 'Top Creamery Yogurt powder', 0.308, 'g', 'dairy', 'Coffee de Grail'),\n  ('Frappe base powder', 'Top Creamery Frappe base powder', 0.31, 'g', 'flavor', 'Coffee de Grail'),\n  ('Mocha powder', 'Top Creamery Mocha powder', 0.34, 'g', 'beverage', 'Coffee de Grail'),\n  ('Salted caramel powder', 'Top Creamery Salted caramel powder', 0.27, 'g', 'flavor', 'Coffee de Grail'),\n  ('Dark chocolate powder', 'Top Creamery Dark chocolate powder', 0.44, 'g', 'flavor', 'Coffee de Grail'),\n  ('Matcha latte powder', 'Catcher Matcha latte powder', 0.79, 'g', 'beverage', 'Coffee de Grail'),\n  ('Salted caramel sauce', 'Catcher Salted caramel sauce', 0.415, 'g', 'flavor', 'Coffee de Grail'),\n  ('White chocolate sauce', 'Catcher White chocolate sauce', 0.415, 'g', 'flavor', 'Coffee de Grail'),\n  ('Chocolate sauce', 'Catcher Chocolate sauce', 0.415, 'g', 'flavor', 'Coffee de Grail'),\n  ('Matcha sauce', 'Catcher Matcha sauce', 0.69, 'g', 'beverage', 'Coffee de Grail'),\n  ('Full cream milk - Milklab', 'Milklab Full cream milk - Milklab', 0.095, 'ml', 'dairy', 'Coffee de Grail'),\n  ('Full cream milk - Jersey', 'Jersey Full cream milk - Jersey', 0.075, 'ml', 'dairy', 'Coffee de Grail'),\n  ('Salted caramel syrup', 'Easy Salted caramel syrup', 0.165, 'ml', 'flavor', 'Coffee de Grail'),\n  ('Creamy vanilla syrup', 'Top Creamery Creamy vanilla syrup', 0.3266666667, 'ml', 'dairy', 'Coffee de Grail'),\n  ('French vanilla syrup', 'Top Creamery French vanilla syrup', 0.3266666667, 'ml', 'flavor', 'Coffee de Grail'),\n  ('Condensed milk', 'Jersey Condensed milk', 0.135, 'ml', 'dairy', 'Coffee de Grail'),\n  ('Blueberry jam', 'Doking Blueberry jam', 0.1166666667, 'g', 'other', 'Coffee de Grail'),\n  ('Strawberry jam', 'Doking Strawberry jam', 0.1166666667, 'g', 'other', 'Coffee de Grail'),\n  ('Green apple syrup', 'Easy Green apple syrup', 0.132, 'ml', 'condiment', 'Coffee de Grail'),\n  ('Strawberry syrup', 'Easy Strawberry syrup', 0.132, 'ml', 'condiment', 'Coffee de Grail'),\n  ('Blueberry syrup', 'Easy Blueberry syrup', 0.132, 'ml', 'condiment', 'Coffee de Grail'),\n  ('Soda', 'Sprite Soda', 0.046, 'g', 'other', 'Robinsons'),\n  ('Coffee jelly', 'Easy Coffee jelly', 0.1673913043, 'g', 'beverage', 'Coffee de Grail'),\n  ('Strawberry popping boba', 'Doking Strawberry popping boba', 0.1633333333, 'g', 'other', 'Coffee de Grail'),\n  ('Green apple popping boba', 'HYX Green apple popping boba', 0.1653846154, 'g', 'other', 'Shopee'),\n  ('Blueberry popping boba', 'Double Happiness Blueberry popping boba', 0.2075, 'g', 'other', 'Shopee'),\n  ('Vivo - Whipped cream', 'Vivo Vivo - Whipped cream', 0.189, 'ml', 'dairy', 'Coffee de Grail'),\n  ('Mosa charger', 'Mosa Mosa charger', 20.0, 'g', 'other', 'Shopee'),\n  ('Lemon Flavor', 'Easy Lemon Flavor', 0.132, 'g', 'other', 'Coffee de Grail'),\n  ('Syrup - Sweetener', 'Easy Syrup - Sweetener', 0.06, 'ml', 'condiment', 'Coffee de Grail'),\n  ('Yakult', 'Yakult Yakult', 10.0, 'g', 'other', 'Robinsons'),\n  ('Lemons', 'Lemons', 16.66666667, 'g', 'other', 'Market'),\n  ('Java Chip powder', 'Top Creamery Java Chip powder', 0.66, 'g', 'flavor', 'Coffee de Grail'),\n  ('Crushed Oreo', 'Oreo Crushed Oreo', 0.6088235294, 'g', 'other', 'Coffee de Grail'),\n  ('Biscoff sauce', 'Biscoff Biscoff sauce', 1.0875, 'g', 'condiment', 'Coffee de Grail'),\n  ('Biscoff crumbs', 'Biscoff Biscoff crumbs', 0.5266666667, 'g', 'other', 'Coffee de Grail'),\n  ('Hazelnut syrup', 'Top Creamery Hazelnut syrup', 0.3266666667, 'ml', 'condiment', 'Coffee de Grail');
 
--- Insert sample products data
+-- Insert products data from Excel file
 INSERT INTO public.products (name, description, category, selling_price, estimated_cost, profit_margin) VALUES
-  -- Sandwiches
-  ('Ham & Egg Sandwich', 'Classic ham and egg sandwich on artisan bread', 'sandwich', 8.50, 3.25, 61.76),
-  ('Bacon & Egg Sandwich', 'Crispy bacon and egg sandwich', 'sandwich', 9.00, 3.85, 57.22),
-  ('Club Sandwich', 'Triple decker with chicken, bacon, lettuce, tomato', 'sandwich', 12.50, 5.20, 58.40),
-  
-  -- Drinks  
-  ('Dark Chocolate Frappe', 'Rich dark chocolate blended drink', 'drink', 6.50, 2.80, 56.92),
-  ('Mocha Frappe', 'Coffee and chocolate blended drink', 'drink', 6.75, 3.10, 54.07),
-  ('White Chocolate Frappe', 'Smooth white chocolate frappe', 'drink', 6.75, 3.20, 52.59),
-  
-  -- Coffee
-  ('Americano', 'Double espresso with hot water', 'coffee', 4.50, 1.85, 58.89),
-  ('Cappuccino', 'Espresso with steamed milk foam', 'coffee', 5.25, 2.15, 59.05),
-  ('Latte', 'Espresso with steamed milk', 'coffee', 5.50, 2.25, 59.09);
+  ('Salted Caramel - 12 oz', 'Delicious Salted Caramel - 12 oz', 'drink', 114.2, 45.6800, 60.0),\n  ('Salted Caramel - 16 oz', 'Delicious Salted Caramel - 16 oz', 'drink', 156.22, 62.4900, 60.0);
 
--- Insert sample product-ingredient relationships
--- Ham & Egg Sandwich
+-- Insert product-ingredient relationships
 INSERT INTO public.product_ingredients (product_id, ingredient_id, quantity, unit, cost_contribution) VALUES
-  ((SELECT id FROM products WHERE name = 'Ham & Egg Sandwich'), 
-   (SELECT id FROM ingredients WHERE name = 'Bread Slice'), 2, 'piece', 0.70),
-  ((SELECT id FROM products WHERE name = 'Ham & Egg Sandwich'), 
-   (SELECT id FROM ingredients WHERE name = 'Ham'), 60, 'g', 2.70),
-  ((SELECT id FROM products WHERE name = 'Ham & Egg Sandwich'), 
-   (SELECT id FROM ingredients WHERE name = 'Eggs'), 1, 'piece', 0.25),
-  ((SELECT id FROM products WHERE name = 'Ham & Egg Sandwich'), 
-   (SELECT id FROM ingredients WHERE name = 'Butter'), 10, 'g', 1.20),
-  ((SELECT id FROM products WHERE name = 'Ham & Egg Sandwich'), 
-   (SELECT id FROM ingredients WHERE name = 'Salt'), 1, 'g', 0.002);
-
--- Dark Chocolate Frappe
-INSERT INTO public.product_ingredients (product_id, ingredient_id, quantity, unit, cost_contribution) VALUES
-  ((SELECT id FROM products WHERE name = 'Dark Chocolate Frappe'), 
-   (SELECT id FROM ingredients WHERE name = 'Whole Milk'), 200, 'ml', 4.00),
-  ((SELECT id FROM products WHERE name = 'Dark Chocolate Frappe'), 
-   (SELECT id FROM ingredients WHERE name = 'Dark Chocolate'), 30, 'g', 5.40),
-  ((SELECT id FROM products WHERE name = 'Dark Chocolate Frappe'), 
-   (SELECT id FROM ingredients WHERE name = 'Heavy Cream'), 50, 'ml', 1.50),
-  ((SELECT id FROM products WHERE name = 'Dark Chocolate Frappe'), 
-   (SELECT id FROM ingredients WHERE name = 'Espresso'), 1, 'shot', 1.50);
+  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Espresso'), 45.0, 'g', 34.6050),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Frappe base powder'), 20.0, 'g', 6.2000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel powder'), 15.0, 'g', 4.0500),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Ice'), 180.0, 'g', 0.0000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Water'), 20.0, 'g', 0.0000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel syrup'), 5.0, 'g', 0.8250),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 12 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel sauce - drizzle'), 3.0, 'g', 0.0000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Espresso'), 60.0, 'g', 46.1400),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Frappe base powder'), 30.0, 'g', 9.3000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel powder'), 20.0, 'g', 5.4000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Ice'), 250.0, 'g', 0.0000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Water'), 30.0, 'g', 0.0000),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel syrup'), 10.0, 'g', 1.6500),\n  ((SELECT id FROM products WHERE name = 'Salted Caramel - 16 oz'), 
+   (SELECT id FROM ingredients WHERE name = 'Salted caramel sauce - drizzle'), 3.0, 'g', 0.0000);
 
 -- Add triggers to update the updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
