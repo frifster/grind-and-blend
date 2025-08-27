@@ -47,8 +47,12 @@ export default function ProtectedRoute({
     )
   }
 
-  // Redirect if not authenticated
-  if (!user) {
+  // TEMPORARY: For development/testing purposes, allow access without authentication
+  // Comment out this section when authentication is properly configured
+  const isDev = process.env.NODE_ENV === 'development'
+  
+  // Redirect if not authenticated (disabled for dev)
+  if (!user && !isDev) {
     return (
       <div className={`flex items-center justify-center min-h-screen ${className}`}>
         <div className="text-center">
