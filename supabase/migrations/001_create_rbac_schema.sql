@@ -1,5 +1,5 @@
 -- Create roles table
-CREATE TABLE public.roles (
+CREATE TABLE IF NOT EXISTS public.roles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name VARCHAR(50) UNIQUE NOT NULL,
   description TEXT,
@@ -8,7 +8,7 @@ CREATE TABLE public.roles (
 );
 
 -- Create permissions table
-CREATE TABLE public.permissions (
+CREATE TABLE IF NOT EXISTS public.permissions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL,
   description TEXT,
@@ -18,7 +18,7 @@ CREATE TABLE public.permissions (
 );
 
 -- Create role_permissions junction table
-CREATE TABLE public.role_permissions (
+CREATE TABLE IF NOT EXISTS public.role_permissions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   role_id UUID REFERENCES public.roles(id) ON DELETE CASCADE,
   permission_id UUID REFERENCES public.permissions(id) ON DELETE CASCADE,
@@ -27,7 +27,7 @@ CREATE TABLE public.role_permissions (
 );
 
 -- Create user_roles junction table
-CREATE TABLE public.user_roles (
+CREATE TABLE IF NOT EXISTS public.user_roles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   role_id UUID REFERENCES public.roles(id) ON DELETE CASCADE,
@@ -38,7 +38,7 @@ CREATE TABLE public.user_roles (
 );
 
 -- Create profiles table (extends auth.users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email VARCHAR(255) NOT NULL,
   full_name VARCHAR(255),
@@ -166,47 +166,51 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies
-
--- Profiles policies
-CREATE POLICY "Users can view own profile" ON public.profiles
-  FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "Users can update own profile" ON public.profiles
-  FOR UPDATE USING (auth.uid() = id);
-
-CREATE POLICY "Service role can view all profiles" ON public.profiles
-  FOR SELECT USING (auth.role() = 'service_role');
-
--- Roles policies
-CREATE POLICY "Everyone can view roles" ON public.roles
-  FOR SELECT USING (true);
-
-CREATE POLICY "Service role can manage roles" ON public.roles
-  FOR ALL USING (auth.role() = 'service_role');
-
--- Permissions policies
-CREATE POLICY "Everyone can view permissions" ON public.permissions
-  FOR SELECT USING (true);
-
-CREATE POLICY "Service role can manage permissions" ON public.permissions
-  FOR ALL USING (auth.role() = 'service_role');
-
--- User roles policies (simplified to avoid recursion)
-CREATE POLICY "Users can view own roles" ON public.user_roles
-  FOR SELECT USING (user_id = auth.uid());
-
-CREATE POLICY "Service role can access all user roles" ON public.user_roles
-  FOR ALL USING (auth.role() = 'service_role');
-
-CREATE POLICY "Authenticated users can read user roles" ON public.user_roles
-  FOR SELECT USING (auth.role() = 'authenticated');
-
--- Role permissions policies
-CREATE POLICY "Everyone can view role permissions" ON public.role_permissions
-  FOR SELECT USING (true);
-
-CREATE POLICY "Service role can manage role permissions" ON public.role_permissions
-  FOR ALL USING (auth.role() = 'service_role');
+DO $$ 
+BEGIN
+  -- Profiles policies
+  CREATE POLICY "Users can view own profile" ON public.profiles
+    FOR SELECT USING (auth.uid() = id);
+  
+  CREATE POLICY "Users can update own profile" ON public.profiles
+    FOR UPDATE USING (auth.uid() = id);
+  
+  CREATE POLICY "Service role can view all profiles" ON public.profiles
+    FOR SELECT USING (auth.role() = 'service_role');
+  
+  -- Roles policies
+  CREATE POLICY "Everyone can view roles" ON public.roles
+    FOR SELECT USING (true);
+  
+  CREATE POLICY "Service role can manage roles" ON public.roles
+    FOR ALL USING (auth.role() = 'service_role');
+  
+  -- Permissions policies
+  CREATE POLICY "Everyone can view permissions" ON public.permissions
+    FOR SELECT USING (true);
+  
+  CREATE POLICY "Service role can manage permissions" ON public.permissions
+    FOR ALL USING (auth.role() = 'service_role');
+  
+  -- User roles policies (simplified to avoid recursion)
+  CREATE POLICY "Users can view own roles" ON public.user_roles
+    FOR SELECT USING (user_id = auth.uid());
+  
+  CREATE POLICY "Service role can access all user roles" ON public.user_roles
+    FOR ALL USING (auth.role() = 'service_role');
+  
+  CREATE POLICY "Authenticated users can read user roles" ON public.user_roles
+    FOR SELECT USING (auth.role() = 'authenticated');
+  
+  -- Role permissions policies
+  CREATE POLICY "Everyone can view role permissions" ON public.role_permissions
+    FOR SELECT USING (true);
+  
+  CREATE POLICY "Service role can manage role permissions" ON public.role_permissions
+    FOR ALL USING (auth.role() = 'service_role');
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Function to automatically create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -249,10 +253,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers for updated_at
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_roles_updated_at ON public.roles;
 CREATE TRIGGER update_roles_updated_at
   BEFORE UPDATE ON public.roles
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
