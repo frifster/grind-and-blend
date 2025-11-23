@@ -78,8 +78,8 @@ const NavBar = () => {
         }
         {canAccessAdmin && (
           <div className={styles.desktop_nav_menu_item}>
-            <Link href="/admin">
-              Admin
+            <Link href="/portal">
+              Admin Portal
             </Link>
           </div>
         )}
@@ -99,8 +99,8 @@ const NavBar = () => {
           }
           {canAccessAdmin && (
             <div className={styles.mobile_nav_menu_item}>
-              <Link href="/admin">
-                Admin
+              <Link href="/portal">
+                Admin Portal
               </Link>
             </div>
           )}
