@@ -48,7 +48,7 @@ export default function MenuGrid({ items, categories }: MenuGridProps) {
                 return (
                     <div key={category.id} className="category-section">
                         {/* Category Header */}
-                        <h2 className="text-lg font-bold text-gray-800 mb-3 px-1">
+                        <h2 className="text-lg font-bold text-gray-800 mb-3">
                             {category.name}
                         </h2>
 
@@ -68,7 +68,7 @@ export default function MenuGrid({ items, categories }: MenuGridProps) {
                             {/* Scrollable Container */}
                             <div
                                 ref={scrollRef}
-                                className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide scroll-container"
+                                className="flex gap-4 overflow-x-auto pb-4 pr-4 snap-x snap-mandatory scrollbar-hide scroll-container"
                             >
                                 {items.map((item) => (
                                     <div

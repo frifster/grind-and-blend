@@ -47,9 +47,9 @@ const Menu = () => {
 
   if (loading) {
     return (
-      <div className={styles.menu}>
+      <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold text-center mb-6">Our Menu</h1>
+          <h1 className="text-xl font-bold text-center mb-6">Our Menu</h1>
           <p className="text-center text-gray-500 text-sm">Loading menu...</p>
         </div>
       </div>
@@ -57,7 +57,7 @@ const Menu = () => {
   }
 
   return (
-    <div className={styles.menu}>
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-xl font-bold text-center mb-6 bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent">
           Our Menu
